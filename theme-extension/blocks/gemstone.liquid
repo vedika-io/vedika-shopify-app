@@ -1,0 +1,93 @@
+{% comment %}
+  Vedika Gemstone Block — Crystal/gemstone recommendation by zodiac sign.
+  Uses the Vedika crystals API for zodiac-specific stone recommendations.
+  Works with any Shopify theme.
+
+  (c) Vedika Intelligence — https://vedika.io
+{% endcomment %}
+
+{% render 'vedika-init', api_key: block.settings.vedika_api_key %}
+
+<div
+  class="vedika-shopify-block vedika-gemstone"
+  id="vedika-gemstone-{{ block.id }}"
+  data-block-id="{{ block.id }}"
+  data-sign="{{ block.settings.default_sign }}"
+  data-lang="{{ block.settings.language }}"
+  data-theme="{{ block.settings.color_theme }}"
+  data-api-key="{{ block.settings.vedika_api_key }}"
+>
+  <div class="vedika-loading">
+    <div class="vedika-loading__spinner"></div>
+    <p>Finding your gemstones...</p>
+  </div>
+</div>
+
+<script>
+  (function() {
+    var container = document.getElementById('vedika-gemstone-{{ block.id }}');
+    if (!container || !window.VedikaShopify) return;
+    VedikaShopify.renderGemstone(container);
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Vedika Gemstone",
+  "target": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "vedika_api_key",
+      "label": "Vedika API Key",
+      "info": "Leave empty for free sandbox (mock data). Get a key at vedika.io"
+    },
+    {
+      "type": "select",
+      "id": "default_sign",
+      "label": "Default Zodiac Sign",
+      "default": "aries",
+      "options": [
+        { "value": "aries", "label": "Aries" },
+        { "value": "taurus", "label": "Taurus" },
+        { "value": "gemini", "label": "Gemini" },
+        { "value": "cancer", "label": "Cancer" },
+        { "value": "leo", "label": "Leo" },
+        { "value": "virgo", "label": "Virgo" },
+        { "value": "libra", "label": "Libra" },
+        { "value": "scorpio", "label": "Scorpio" },
+        { "value": "sagittarius", "label": "Sagittarius" },
+        { "value": "capricorn", "label": "Capricorn" },
+        { "value": "aquarius", "label": "Aquarius" },
+        { "value": "pisces", "label": "Pisces" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "language",
+      "label": "Language",
+      "default": "en",
+      "options": [
+        { "value": "en", "label": "English" },
+        { "value": "hi", "label": "Hindi" },
+        { "value": "ta", "label": "Tamil" },
+        { "value": "te", "label": "Telugu" },
+        { "value": "kn", "label": "Kannada" },
+        { "value": "ml", "label": "Malayalam" },
+        { "value": "mr", "label": "Marathi" },
+        { "value": "bn", "label": "Bengali" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "color_theme",
+      "label": "Color Theme",
+      "default": "light",
+      "options": [
+        { "value": "light", "label": "Light" },
+        { "value": "dark", "label": "Dark" }
+      ]
+    }
+  ]
+}
+{% endschema %}

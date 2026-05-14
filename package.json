@@ -1,0 +1,18 @@
+{
+  "name": "vedika-shopify-app",
+  "version": "1.0.0",
+  "description": "Vedika Astrology widgets for Shopify — horoscope, tarot, compatibility, gemstone blocks",
+  "private": true,
+  "scripts": {
+    "dev": "shopify app dev",
+    "deploy": "shopify app deploy",
+    "info": "shopify app info"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@shopify/cli": "^3.0.0",
+    "@shopify/app": "^3.0.0"
+  },
+  "author": "Vedika Intelligence (https://vedika.io)",
+  "license": "UNLICENSED"
+}

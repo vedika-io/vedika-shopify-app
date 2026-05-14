@@ -1,0 +1,27 @@
+# Vedika Astrology — Shopify Theme Extension
+# https://vedika.io
+
+name = "Vedika Astrology"
+client_id = "REPLACE_WITH_SHOPIFY_CLIENT_ID"
+
+[access_scopes]
+# No Shopify data access needed — widgets are client-side only
+scopes = ""
+
+[auth]
+redirect_urls = [ "https://api.vedika.io/shopify/auth/callback" ]
+
+[webhooks]
+api_version = "2024-10"
+
+[app_proxy]
+url = "https://api.vedika.io"
+subpath = "vedika"
+prefix = "apps"
+
+[[extensions]]
+type = "theme"
+name = "vedika-astrology"
+
+  [extensions.build]
+  exclude = ["node_modules"]

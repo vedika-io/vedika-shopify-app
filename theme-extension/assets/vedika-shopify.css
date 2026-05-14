@@ -1,0 +1,432 @@
+/**
+ * Vedika Shopify Widget Styles
+ * Light + Dark theme via [data-theme] attribute.
+ * Designed to work with Dawn, Debut, and all standard Shopify themes.
+ *
+ * All class names prefixed with `vedika-` to avoid conflicts with theme CSS.
+ * (c) Vedika Intelligence — https://vedika.io
+ */
+
+/* =========================================================================
+   CSS CUSTOM PROPERTIES — LIGHT THEME (default)
+   ========================================================================= */
+
+.vedika-shopify-block {
+  --vedika-bg: #ffffff;
+  --vedika-bg-secondary: #f8f9fa;
+  --vedika-bg-accent: #fff8f0;
+  --vedika-text: #1a1a2e;
+  --vedika-text-secondary: #6c757d;
+  --vedika-text-muted: #adb5bd;
+  --vedika-border: #e9ecef;
+  --vedika-primary: #e67e22;
+  --vedika-primary-light: #fdebd0;
+  --vedika-primary-dark: #d35400;
+  --vedika-accent: #8e44ad;
+  --vedika-accent-light: #f5eef8;
+  --vedika-success: #27ae60;
+  --vedika-danger: #e74c3c;
+  --vedika-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  --vedika-shadow-hover: 0 4px 20px rgba(0, 0, 0, 0.12);
+  --vedika-radius: 12px;
+  --vedika-radius-sm: 8px;
+  --vedika-font: inherit;
+  --vedika-transition: 0.2s ease;
+}
+
+/* =========================================================================
+   DARK THEME
+   ========================================================================= */
+
+.vedika-shopify-block[data-theme="dark"] {
+  --vedika-bg: #1a1a2e;
+  --vedika-bg-secondary: #16213e;
+  --vedika-bg-accent: #1f2a40;
+  --vedika-text: #e8e8e8;
+  --vedika-text-secondary: #b0b0b0;
+  --vedika-text-muted: #6c757d;
+  --vedika-border: #2d3748;
+  --vedika-primary: #f0a040;
+  --vedika-primary-light: #3d2e1a;
+  --vedika-primary-dark: #e67e22;
+  --vedika-accent: #bb86fc;
+  --vedika-accent-light: #2d1f42;
+  --vedika-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+  --vedika-shadow-hover: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+/* =========================================================================
+   BASE
+   ========================================================================= */
+
+.vedika-shopify-block {
+  font-family: var(--vedika-font);
+  color: var(--vedika-text);
+  background: var(--vedika-bg);
+  border: 1px solid var(--vedika-border);
+  border-radius: var(--vedika-radius);
+  box-shadow: var(--vedika-shadow);
+  padding: 24px;
+  max-width: 480px;
+  width: 100%;
+  margin: 0 auto;
+  box-sizing: border-box;
+  line-height: 1.6;
+  transition: box-shadow var(--vedika-transition);
+}
+
+.vedika-shopify-block:hover {
+  box-shadow: var(--vedika-shadow-hover);
+}
+
+.vedika-shopify-block * {
+  box-sizing: border-box;
+}
+
+/* =========================================================================
+   HEADER
+   ========================================================================= */
+
+.vedika-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--vedika-border);
+}
+
+.vedika-header__title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--vedika-text);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.vedika-header__icon {
+  font-size: 24px;
+  line-height: 1;
+}
+
+.vedika-header__badge {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--vedika-primary);
+  background: var(--vedika-primary-light);
+  padding: 2px 8px;
+  border-radius: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* =========================================================================
+   SIGN SELECTOR
+   ========================================================================= */
+
+.vedika-sign-selector {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.vedika-sign-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 8px 6px;
+  border: 1px solid var(--vedika-border);
+  border-radius: var(--vedika-radius-sm);
+  background: var(--vedika-bg);
+  color: var(--vedika-text-secondary);
+  cursor: pointer;
+  font-size: 10px;
+  font-family: var(--vedika-font);
+  transition: all var(--vedika-transition);
+  min-width: 52px;
+  text-transform: capitalize;
+}
+
+.vedika-sign-btn:hover {
+  border-color: var(--vedika-primary);
+  color: var(--vedika-primary);
+  background: var(--vedika-primary-light);
+}
+
+.vedika-sign-btn.active {
+  border-color: var(--vedika-primary);
+  background: var(--vedika-primary);
+  color: #fff;
+}
+
+.vedika-sign-btn__symbol {
+  font-size: 18px;
+  line-height: 1;
+}
+
+/* =========================================================================
+   PREDICTION TEXT
+   ========================================================================= */
+
+.vedika-prediction {
+  font-size: 14px;
+  color: var(--vedika-text);
+  line-height: 1.7;
+  margin-bottom: 16px;
+}
+
+/* =========================================================================
+   CATEGORIES GRID
+   ========================================================================= */
+
+.vedika-categories {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.vedika-category {
+  background: var(--vedika-bg-secondary);
+  border-radius: var(--vedika-radius-sm);
+  padding: 12px;
+}
+
+.vedika-category__label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--vedika-text-muted);
+  margin-bottom: 4px;
+}
+
+.vedika-category__text {
+  font-size: 12px;
+  color: var(--vedika-text-secondary);
+  line-height: 1.5;
+}
+
+.vedika-category__score {
+  display: inline-block;
+  margin-top: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--vedika-primary);
+}
+
+/* =========================================================================
+   LUCKY ROW
+   ========================================================================= */
+
+.vedika-lucky-row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.vedika-lucky-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--vedika-text-secondary);
+  background: var(--vedika-bg-secondary);
+  padding: 6px 12px;
+  border-radius: 20px;
+}
+
+.vedika-lucky-item__label {
+  font-weight: 600;
+  color: var(--vedika-text-muted);
+  font-size: 11px;
+  text-transform: uppercase;
+}
+
+/* =========================================================================
+   TAROT
+   ========================================================================= */
+
+.vedika-tarot-card {
+  text-align: center;
+  padding: 24px 16px;
+  background: linear-gradient(135deg, var(--vedika-accent-light), var(--vedika-bg-secondary));
+  border-radius: var(--vedika-radius);
+  margin-bottom: 16px;
+}
+
+.vedika-tarot-card__symbol { font-size: 48px; margin-bottom: 12px; display: block; }
+.vedika-tarot-card__name { font-size: 20px; font-weight: 700; color: var(--vedika-accent); margin-bottom: 4px; }
+.vedika-tarot-card__arcana { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: var(--vedika-text-muted); margin-bottom: 12px; }
+.vedika-tarot-card__meaning { font-size: 14px; color: var(--vedika-text-secondary); line-height: 1.6; }
+
+.vedika-tarot-keywords { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin-top: 12px; }
+.vedika-tarot-keyword { font-size: 11px; padding: 3px 10px; border-radius: 12px; background: var(--vedika-accent-light); color: var(--vedika-accent); border: 1px solid var(--vedika-accent); }
+
+.vedika-tarot-affirmation {
+  font-style: italic;
+  font-size: 13px;
+  color: var(--vedika-text-secondary);
+  text-align: center;
+  padding: 12px;
+  background: var(--vedika-bg-accent);
+  border-radius: var(--vedika-radius-sm);
+  margin-top: 12px;
+  border-left: 3px solid var(--vedika-accent);
+}
+
+/* =========================================================================
+   COMPATIBILITY
+   ========================================================================= */
+
+.vedika-compat-signs { display: flex; align-items: center; justify-content: center; gap: 16px; margin-bottom: 16px; }
+.vedika-compat-sign { text-align: center; }
+.vedika-compat-sign__symbol { font-size: 36px; display: block; }
+.vedika-compat-sign__name { font-size: 13px; font-weight: 600; color: var(--vedika-text); text-transform: capitalize; margin-top: 4px; }
+.vedika-compat-heart { font-size: 24px; color: var(--vedika-danger); }
+
+.vedika-compat-score { text-align: center; padding: 20px; margin-bottom: 16px; }
+.vedika-compat-score__value { font-size: 48px; font-weight: 800; color: var(--vedika-primary); line-height: 1; }
+.vedika-compat-score__label { font-size: 13px; color: var(--vedika-text-secondary); margin-top: 4px; }
+
+.vedika-compat-details { list-style: none; padding: 0; margin: 0; }
+.vedika-compat-details li { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--vedika-border); font-size: 13px; gap: 8px; }
+.vedika-compat-details li:last-child { border-bottom: none; }
+.vedika-compat-details__name { color: var(--vedika-text); flex: 1; }
+.vedika-compat-details__bar { width: 80px; height: 6px; background: var(--vedika-bg-secondary); border-radius: 3px; overflow: hidden; }
+.vedika-compat-details__fill { height: 100%; border-radius: 3px; background: var(--vedika-primary); transition: width 0.5s ease; }
+
+/* =========================================================================
+   GEMSTONE
+   ========================================================================= */
+
+.vedika-gemstone-section { margin-bottom: 16px; }
+.vedika-gemstone-section__label { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--vedika-text-muted); margin-bottom: 8px; }
+
+.vedika-gemstone-list { display: flex; flex-wrap: wrap; gap: 8px; }
+
+.vedika-gemstone-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-radius: var(--vedika-radius-sm);
+  background: var(--vedika-bg-secondary);
+  border: 1px solid var(--vedika-border);
+  transition: all var(--vedika-transition);
+}
+
+.vedika-gemstone-item:hover {
+  border-color: var(--vedika-primary);
+  background: var(--vedika-primary-light);
+}
+
+.vedika-gemstone-item--primary {
+  background: var(--vedika-primary-light);
+  border-color: var(--vedika-primary);
+}
+
+.vedika-gemstone-item--balance {
+  background: var(--vedika-accent-light);
+  border-color: var(--vedika-accent);
+}
+
+.vedika-gemstone-item__icon { font-size: 20px; }
+.vedika-gemstone-item__name { font-size: 13px; font-weight: 600; color: var(--vedika-text); }
+
+/* =========================================================================
+   INPUTS
+   ========================================================================= */
+
+.vedika-input-row { display: flex; gap: 12px; margin-bottom: 16px; }
+
+.vedika-select {
+  flex: 1;
+  padding: 10px 12px;
+  border: 1px solid var(--vedika-border);
+  border-radius: var(--vedika-radius-sm);
+  background: var(--vedika-bg);
+  color: var(--vedika-text);
+  font-family: var(--vedika-font);
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.vedika-select:focus {
+  outline: none;
+  border-color: var(--vedika-primary);
+  box-shadow: 0 0 0 3px var(--vedika-primary-light);
+}
+
+.vedika-btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: var(--vedika-radius-sm);
+  background: var(--vedika-primary);
+  color: #fff;
+  font-family: var(--vedika-font);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--vedika-transition);
+}
+
+.vedika-btn:hover { background: var(--vedika-primary-dark); }
+
+.vedika-btn--outline {
+  background: transparent;
+  border: 1px solid var(--vedika-primary);
+  color: var(--vedika-primary);
+}
+
+.vedika-btn--outline:hover {
+  background: var(--vedika-primary);
+  color: #fff;
+}
+
+/* =========================================================================
+   LOADING + ERROR
+   ========================================================================= */
+
+.vedika-loading { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px 20px; color: var(--vedika-text-muted); }
+.vedika-loading__spinner { width: 32px; height: 32px; border: 3px solid var(--vedika-border); border-top-color: var(--vedika-primary); border-radius: 50%; animation: vedika-spin 0.8s linear infinite; margin-bottom: 12px; }
+@keyframes vedika-spin { to { transform: rotate(360deg); } }
+
+.vedika-error { text-align: center; padding: 24px; color: var(--vedika-danger); }
+.vedika-error__icon { font-size: 32px; margin-bottom: 8px; display: block; }
+.vedika-error__text { font-size: 13px; }
+
+/* =========================================================================
+   FOOTER
+   ========================================================================= */
+
+.vedika-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 12px;
+  border-top: 1px solid var(--vedika-border);
+  margin-top: 16px;
+}
+
+.vedika-footer__brand { font-size: 11px; color: var(--vedika-text-muted); }
+.vedika-footer__brand a { color: var(--vedika-primary); text-decoration: none; font-weight: 600; }
+.vedika-footer__brand a:hover { text-decoration: underline; }
+.vedika-footer__date { font-size: 11px; color: var(--vedika-text-muted); }
+
+/* =========================================================================
+   RESPONSIVE
+   ========================================================================= */
+
+@media (max-width: 480px) {
+  .vedika-shopify-block { padding: 16px; border-radius: var(--vedika-radius-sm); }
+  .vedika-categories { grid-template-columns: 1fr; }
+  .vedika-sign-selector { gap: 4px; }
+  .vedika-sign-btn { min-width: 44px; padding: 6px 4px; font-size: 9px; }
+  .vedika-sign-btn__symbol { font-size: 14px; }
+  .vedika-input-row { flex-direction: column; }
+}

@@ -1,0 +1,34 @@
+{% comment %}
+  Vedika Astrology — Initialization Snippet
+  Include this once in theme.liquid or in each block that needs it.
+  Sets up the API client and injects the required JS/CSS assets.
+
+  Usage in theme.liquid:
+    {% render 'vedika-init', api_key: settings.vedika_api_key %}
+
+  (c) Vedika Intelligence — https://vedika.io
+{% endcomment %}
+
+{% unless vedika_initialized %}
+  {% assign vedika_initialized = true %}
+
+  {{ 'vedika-shopify.css' | asset_url | stylesheet_tag }}
+
+  <script>
+    window.VedikaConfig = {
+      apiKey: {{ api_key | default: '' | json }},
+      sandboxBase: 'https://api.vedika.io/sandbox',
+      prodBase: 'https://api.vedika.io/v2/astrology',
+      getBase: function() {
+        return this.apiKey ? this.prodBase : this.sandboxBase;
+      },
+      getHeaders: function() {
+        var h = { 'Accept': 'application/json' };
+        if (this.apiKey) h['X-API-Key'] = this.apiKey;
+        return h;
+      }
+    };
+  </script>
+
+  {{ 'vedika-shopify.js' | asset_url | script_tag }}
+{% endunless %}

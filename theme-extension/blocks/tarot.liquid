@@ -1,0 +1,71 @@
+{% comment %}
+  Vedika Tarot Block — Card of the Day with keywords and affirmation.
+  Works with any Shopify theme.
+
+  (c) Vedika Intelligence — https://vedika.io
+{% endcomment %}
+
+{% render 'vedika-init', api_key: block.settings.vedika_api_key %}
+
+<div
+  class="vedika-shopify-block vedika-tarot"
+  id="vedika-tarot-{{ block.id }}"
+  data-block-id="{{ block.id }}"
+  data-lang="{{ block.settings.language }}"
+  data-theme="{{ block.settings.color_theme }}"
+  data-api-key="{{ block.settings.vedika_api_key }}"
+>
+  <div class="vedika-loading">
+    <div class="vedika-loading__spinner"></div>
+    <p>Drawing your card...</p>
+  </div>
+</div>
+
+<script>
+  (function() {
+    var container = document.getElementById('vedika-tarot-{{ block.id }}');
+    if (!container || !window.VedikaShopify) return;
+    VedikaShopify.renderTarot(container);
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Vedika Tarot",
+  "target": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "vedika_api_key",
+      "label": "Vedika API Key",
+      "info": "Leave empty for free sandbox (mock data). Get a key at vedika.io"
+    },
+    {
+      "type": "select",
+      "id": "language",
+      "label": "Language",
+      "default": "en",
+      "options": [
+        { "value": "en", "label": "English" },
+        { "value": "hi", "label": "Hindi" },
+        { "value": "ta", "label": "Tamil" },
+        { "value": "te", "label": "Telugu" },
+        { "value": "kn", "label": "Kannada" },
+        { "value": "ml", "label": "Malayalam" },
+        { "value": "mr", "label": "Marathi" },
+        { "value": "bn", "label": "Bengali" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "color_theme",
+      "label": "Color Theme",
+      "default": "light",
+      "options": [
+        { "value": "light", "label": "Light" },
+        { "value": "dark", "label": "Dark" }
+      ]
+    }
+  ]
+}
+{% endschema %}

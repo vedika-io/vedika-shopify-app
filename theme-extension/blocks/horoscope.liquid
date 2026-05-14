@@ -1,0 +1,109 @@
+{% comment %}
+  Vedika Horoscope Block — Daily/Weekly/Monthly horoscope with sign selector.
+  Works with any Shopify theme (Dawn, Debut, etc.)
+
+  Section schema at bottom provides theme editor settings for:
+  - API key, default sign, period, language, color theme
+
+  (c) Vedika Intelligence — https://vedika.io
+{% endcomment %}
+
+{% render 'vedika-init', api_key: block.settings.vedika_api_key %}
+
+<div
+  class="vedika-shopify-block vedika-horoscope"
+  id="vedika-horoscope-{{ block.id }}"
+  data-block-id="{{ block.id }}"
+  data-sign="{{ block.settings.default_sign }}"
+  data-period="{{ block.settings.period }}"
+  data-lang="{{ block.settings.language }}"
+  data-theme="{{ block.settings.color_theme }}"
+  data-api-key="{{ block.settings.vedika_api_key }}"
+>
+  <div class="vedika-loading">
+    <div class="vedika-loading__spinner"></div>
+    <p>Loading horoscope...</p>
+  </div>
+</div>
+
+<script>
+  (function() {
+    var container = document.getElementById('vedika-horoscope-{{ block.id }}');
+    if (!container || !window.VedikaShopify) return;
+    VedikaShopify.renderHoroscope(container);
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Vedika Horoscope",
+  "target": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "vedika_api_key",
+      "label": "Vedika API Key",
+      "info": "Leave empty for free sandbox (mock data). Get a key at vedika.io"
+    },
+    {
+      "type": "select",
+      "id": "default_sign",
+      "label": "Default Sign",
+      "default": "aries",
+      "options": [
+        { "value": "aries", "label": "Aries" },
+        { "value": "taurus", "label": "Taurus" },
+        { "value": "gemini", "label": "Gemini" },
+        { "value": "cancer", "label": "Cancer" },
+        { "value": "leo", "label": "Leo" },
+        { "value": "virgo", "label": "Virgo" },
+        { "value": "libra", "label": "Libra" },
+        { "value": "scorpio", "label": "Scorpio" },
+        { "value": "sagittarius", "label": "Sagittarius" },
+        { "value": "capricorn", "label": "Capricorn" },
+        { "value": "aquarius", "label": "Aquarius" },
+        { "value": "pisces", "label": "Pisces" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "period",
+      "label": "Horoscope Period",
+      "default": "daily",
+      "options": [
+        { "value": "daily", "label": "Daily" },
+        { "value": "weekly", "label": "Weekly" },
+        { "value": "monthly", "label": "Monthly" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "language",
+      "label": "Language",
+      "default": "en",
+      "options": [
+        { "value": "en", "label": "English" },
+        { "value": "hi", "label": "Hindi" },
+        { "value": "ta", "label": "Tamil" },
+        { "value": "te", "label": "Telugu" },
+        { "value": "kn", "label": "Kannada" },
+        { "value": "ml", "label": "Malayalam" },
+        { "value": "mr", "label": "Marathi" },
+        { "value": "bn", "label": "Bengali" },
+        { "value": "gu", "label": "Gujarati" },
+        { "value": "pa", "label": "Punjabi" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "color_theme",
+      "label": "Color Theme",
+      "default": "light",
+      "options": [
+        { "value": "light", "label": "Light" },
+        { "value": "dark", "label": "Dark" }
+      ]
+    }
+  ]
+}
+{% endschema %}
