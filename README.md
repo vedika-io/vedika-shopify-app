@@ -12,29 +12,69 @@ Add horoscopes, tarot, compatibility checkers, and gemstone recommendations to a
 | **Compatibility** | `blocks/compatibility.liquid` | Ashtakoot zodiac compatibility checker |
 | **Gemstone** | `blocks/gemstone.liquid` | Zodiac-specific gemstone and crystal recommendations |
 
-## Installation
+## How the API key is kept off the storefront
 
-### Option 1: Shopify CLI (for development)
+Earlier versions asked for a **Vedika API Key** in the theme editor and rendered it into the page (`data-api-key`, `window.VedikaConfig.apiKey`). Anything in theme markup is sent to every visitor, so anyone could copy that key and spend the account balance. That setting is gone (Vastu review register `leaks#3`, 2026-09-17).
 
-```bash
-cd vedika-shopify-app
-npm install
-shopify app dev
+The blocks now call the shop's own domain:
+
+```
+https://<shop>/apps/vedika/horoscope/aries?lang=hi
 ```
 
-### Option 2: Manual Theme Extension
+Shopify's [app proxy](https://shopify.dev/docs/apps/build/online-store/app-proxies) forwards that request to your proxy server and adds a signature. The server in `app-proxy/` verifies the signature, forwards only the routes below, and adds the key. The browser never sees it. Because the request stays on the shop's domain, there is no cross-origin call: `api.vedika.io` does not accept browser calls from storefront origins anyway.
 
-1. Copy the `theme-extension/` folder into your Shopify theme
-2. Add the snippets, blocks, and assets to the appropriate directories
-3. In your theme, add blocks via the Shopify Theme Editor (Customize)
+If an older theme still carries a key, the widget script ignores it, sends nothing, and logs one console warning. Rotate that key in the Vedika dashboard: it has already been public.
 
-### Option 3: Code Snippet (any theme)
+## Installation
 
-Add to a Custom Liquid section in Shopify:
+### 1. Run the app proxy server
+
+Requirements: Node 18 or later, an HTTPS host, no npm dependencies.
+
+```bash
+SHOPIFY_API_SECRET=<app client secret> \
+VEDIKA_MODE=live \
+VEDIKA_API_KEY=<vk_live_... key> \
+SHOPIFY_SHOP_DOMAIN=<your-shop>.myshopify.com \
+PORT=8787 \
+npm run proxy
+```
+
+| Variable | Required | Meaning |
+|----------|----------|---------|
+| `SHOPIFY_API_SECRET` | yes | The app's client secret. Every request without a valid Shopify signature gets 401. |
+| `VEDIKA_MODE` | no | `live` sends keyed, billed requests. `sandbox` (default) uses Vedika's keyless mock data. |
+| `VEDIKA_API_KEY` | in live mode | Your Vedika key. Keep it in your host's secret store. |
+| `SHOPIFY_SHOP_DOMAIN` | recommended | Serve only this shop. Leave unset only if one key may serve every shop that installs the app. |
+| `PROXY_PATH_PREFIX` | no | Path the handler is mounted at. Default `/vedika-proxy`. |
+| `PORT` | no | Listen port for `server.mjs`. Default `8787`. |
+
+The handler also rejects signatures older than 5 minutes. It does not rate-limit: put a per-client limit in front of it at your load balancer or WAF, because every live call is billed to your Vedika account.
+
+To host it elsewhere (serverless, edge), import `handleAppProxyRequest` from `app-proxy/vedika-app-proxy.mjs`. It takes a Web `Request` and returns a `Response`.
+
+A public app installed by many merchants needs a key per shop. This reference handler holds one key; store per-shop keys server-side and look them up by the verified `shop` parameter before using it for more than one store.
+
+### 2. Point the app proxy at it
+
+In `shopify.app.toml`, replace the placeholder host:
+
+```toml
+[app_proxy]
+url = "https://<your-proxy-host>/vedika-proxy"
+subpath = "vedika"
+prefix = "apps"
+```
+
+The app needs the `write_app_proxy` scope (already set). Then deploy the app configuration with `npm run deploy` (Shopify CLI).
+
+### 3. Add the blocks
+
+In the theme editor (Customize), add the Vedika blocks. Or add the assets to any theme with a Custom Liquid section:
 
 ```liquid
-{{ 'vedika-shopify.css' | asset_url | stylesheet_tag }}
-{{ 'vedika-shopify.js' | asset_url | script_tag }}
+{% render 'vedika-init' %}
 
 <div class="vedika-shopify-block vedika-horoscope"
      id="vedika-horoscope-1"
@@ -48,23 +88,32 @@ Add to a Custom Liquid section in Shopify:
 </script>
 ```
 
+If a merchant changes the proxy prefix or subpath in the Shopify admin, set `data-proxy-base` on the block (for example `data-proxy-base="/tools/astro"`).
+
+For development: `npm run dev` (Shopify CLI). Tests: `npm test` (Node's built-in runner, no install needed).
+
 ## Theme Editor Settings
 
-Each block exposes settings in the Shopify Theme Editor:
-
-- **API Key** — Leave empty for sandbox (free, mock data). Enter your `vk_live_*` key for real data.
 - **Default Sign** — Pre-selected zodiac sign
 - **Period** — Daily, weekly, or monthly (horoscope only)
-- **Language** — English, Hindi, Tamil, Telugu, Kannada, Malayalam, Marathi, Bengali, Gujarati, Punjabi
+- **Language** — English, Hindi, Tamil, Telugu, Kannada, Malayalam, Marathi, Bengali (varies by block)
 - **Color Theme** — Light or dark
+
+There is no API key setting. The key is configured only on the proxy server.
 
 ## File Structure
 
 ```
 vedika-shopify-app/
-  shopify.app.toml              Shopify app configuration
-  package.json                  Dependencies
+  shopify.app.toml              Shopify app configuration (app proxy URL)
+  package.json                  Scripts: dev, deploy, proxy, test
   README.md                     This file
+  app-proxy/
+    vedika-app-proxy.mjs        Signature check, route allowlist, key injection
+    server.mjs                  Minimal node:http host for the handler
+  test/
+    app-proxy.test.mjs          Proxy tests (signature vectors from Shopify's docs)
+    theme-no-key.test.mjs       Theme never renders or sends a key
   theme-extension/
     blocks/
       horoscope.liquid          Daily horoscope block
@@ -72,22 +121,27 @@ vedika-shopify-app/
       compatibility.liquid      Compatibility checker block
       gemstone.liquid           Gemstone recommendation block
     snippets/
-      vedika-init.liquid        API initialization snippet
+      vedika-init.liquid        Loads assets, sets the proxy base (no key)
     assets/
-      vedika-shopify.js         API client + all widget renderers
+      vedika-shopify.js         Proxy client + all widget renderers
       vedika-shopify.css        Styles (light + dark theme)
 ```
 
-## API Endpoints Used
+## Routes the proxy forwards
 
-| Widget | Sandbox Endpoint | Production Endpoint |
-|--------|-----------------|---------------------|
-| Horoscope | `GET /sandbox/horoscope/:sign` | `GET /v2/astrology/horoscope/:sign` |
-| Tarot | `GET /sandbox/tarot/card-of-the-day` | `GET /v2/astrology/tarot/card-of-the-day` |
-| Compatibility | `GET /sandbox/astrology/ashtakoota` | `GET /v2/astrology/ashtakoota` |
-| Gemstone | `GET /sandbox/crystals/by-zodiac` | `GET /v2/astrology/crystals/by-zodiac` |
+Only these GET routes are forwarded. Everything else gets 404 and never reaches Vedika. Only `lang` (two lowercase letters) is passed through; Shopify's own parameters are dropped.
 
-All sandbox endpoints are free, no API key required, rate-limited to 30 req/min.
+| Block | Proxy path (under `/apps/vedika`) | `VEDIKA_MODE=live` (keyed) | `VEDIKA_MODE=sandbox` (keyless mock) |
+|-------|-----------------------------------|----------------------------|--------------------------------------|
+| Horoscope, daily | `/horoscope/:sign` | `GET /v2/astrology/horoscope/:sign` | `GET /sandbox/horoscope/:sign` |
+| Horoscope, weekly or monthly | `/horoscope/:sign/weekly`, `/horoscope/:sign/monthly` | `GET /v2/astrology/horoscope/:sign/:period` | `GET /sandbox/horoscope/:sign/:period` |
+| Tarot | `/tarot/card-of-the-day` | `GET /v2/tarot/card-of-the-day` | `GET /sandbox/tarot/card-of-the-day` |
+| Gemstone | `/crystals/by-zodiac/:sign` | `GET /v2/crystals/by-zodiac/:sign` | `GET /sandbox/crystals/by-zodiac/:sign` |
+
+Known gaps, unchanged by the key fix:
+
+- **Compatibility** requests `/astrology/ashtakoota`. No public GET operation matches a sign pair (the published Ashtakoot operation, `POST /v2/astrology/ashtakoot-match`, compares two birth charts), so the proxy returns 404 and the block shows an error. The keyless sandbox path also returned 404 when checked on 2026-09-17.
+- **Gemstone** now requests the sign-specific route. Its renderer reads `birthstones`, `supporting_crystals` and `balancing_crystals`, but the sandbox response on 2026-09-17 carried `sign` and `crystals`, so the block may render little until the renderer is updated.
 
 ## Compatibility
 

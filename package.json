@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "shopify app dev",
     "deploy": "shopify app deploy",
-    "info": "shopify app info"
+    "info": "shopify app info",
+    "test": "node --test test/*.test.mjs",
+    "proxy": "node app-proxy/server.mjs"
   },
   "dependencies": {},
   "devDependencies": {
@@ -14,5 +16,8 @@
     "@shopify/app": "^3.0.0"
   },
   "author": "Vedika Intelligence (https://vedika.io)",
-  "license": "UNLICENSED"
+  "license": "UNLICENSED",
+  "engines": {
+    "node": ">=18"
+  }
 }

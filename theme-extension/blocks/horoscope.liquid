@@ -3,12 +3,12 @@
   Works with any Shopify theme (Dawn, Debut, etc.)
 
   Section schema at bottom provides theme editor settings for:
-  - API key, default sign, period, language, color theme
+  - default sign, period, language, color theme (no API key: see snippets/vedika-init.liquid)
 
   (c) Vedika Intelligence — https://vedika.io
 {% endcomment %}
 
-{% render 'vedika-init', api_key: block.settings.vedika_api_key %}
+{% render 'vedika-init' %}
 
 <div
   class="vedika-shopify-block vedika-horoscope"
@@ -18,7 +18,6 @@
   data-period="{{ block.settings.period }}"
   data-lang="{{ block.settings.language }}"
   data-theme="{{ block.settings.color_theme }}"
-  data-api-key="{{ block.settings.vedika_api_key }}"
 >
   <div class="vedika-loading">
     <div class="vedika-loading__spinner"></div>
@@ -40,10 +39,8 @@
   "target": "section",
   "settings": [
     {
-      "type": "text",
-      "id": "vedika_api_key",
-      "label": "Vedika API Key",
-      "info": "Leave empty for free sandbox (mock data). Get a key at vedika.io"
+      "type": "paragraph",
+      "content": "Data comes through this app's proxy at /apps/vedika. The Vedika API key is set on the proxy server, never in the theme."
     },
     {
       "type": "select",

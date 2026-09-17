@@ -5,8 +5,9 @@ name = "Vedika Astrology"
 client_id = "REPLACE_WITH_SHOPIFY_CLIENT_ID"
 
 [access_scopes]
-# No Shopify data access needed — widgets are client-side only
-scopes = ""
+# No shop data is read. write_app_proxy is required to configure the app proxy
+# below (https://shopify.dev/docs/apps/build/online-store/app-proxies).
+scopes = "write_app_proxy"
 
 [auth]
 redirect_urls = [ "https://api.vedika.io/shopify/auth/callback" ]
@@ -15,7 +16,11 @@ redirect_urls = [ "https://api.vedika.io/shopify/auth/callback" ]
 api_version = "2024-10"
 
 [app_proxy]
-url = "https://api.vedika.io"
+# Storefront requests to https://<shop>/apps/vedika/* are forwarded here with a
+# Shopify signature. Point this at YOUR host running app-proxy/server.mjs over
+# HTTPS; it holds the Vedika API key. api.vedika.io does not implement a
+# Shopify app proxy (the previous value sent storefront traffic there).
+url = "https://REPLACE_WITH_YOUR_APP_PROXY_HOST/vedika-proxy"
 subpath = "vedika"
 prefix = "apps"
 

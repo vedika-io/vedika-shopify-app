@@ -5,7 +5,7 @@
   (c) Vedika Intelligence — https://vedika.io
 {% endcomment %}
 
-{% render 'vedika-init', api_key: block.settings.vedika_api_key %}
+{% render 'vedika-init' %}
 
 <div
   class="vedika-shopify-block vedika-compatibility"
@@ -15,7 +15,6 @@
   data-sign2="{{ block.settings.default_sign2 }}"
   data-lang="{{ block.settings.language }}"
   data-theme="{{ block.settings.color_theme }}"
-  data-api-key="{{ block.settings.vedika_api_key }}"
 >
   <div class="vedika-loading">
     <div class="vedika-loading__spinner"></div>
@@ -37,10 +36,8 @@
   "target": "section",
   "settings": [
     {
-      "type": "text",
-      "id": "vedika_api_key",
-      "label": "Vedika API Key",
-      "info": "Leave empty for free sandbox (mock data). Get a key at vedika.io"
+      "type": "paragraph",
+      "content": "Data comes through this app's proxy at /apps/vedika. The Vedika API key is set on the proxy server, never in the theme."
     },
     {
       "type": "select",

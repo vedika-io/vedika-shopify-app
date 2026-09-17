@@ -1,10 +1,18 @@
 {% comment %}
   Vedika Astrology — Initialization Snippet
   Include this once in theme.liquid or in each block that needs it.
-  Sets up the API client and injects the required JS/CSS assets.
+  Injects the JS/CSS assets and points the widgets at the app proxy.
 
   Usage in theme.liquid:
-    {% render 'vedika-init', api_key: settings.vedika_api_key %}
+    {% render 'vedika-init' %}
+
+  No API key belongs here. Everything in this snippet is sent to every
+  storefront visitor, so a key rendered into it could be read and billed by
+  anyone. The widgets call /apps/vedika/... on the shop's own domain; Shopify
+  forwards those calls to the app proxy server (app-proxy/ in this repo),
+  which verifies Shopify's signature and adds the key server-side.
+  An `api_key` render parameter from older themes is ignored (retired
+  2026-09-17, Vastu review register leaks#3).
 
   (c) Vedika Intelligence — https://vedika.io
 {% endcomment %}
@@ -16,17 +24,7 @@
 
   <script>
     window.VedikaConfig = {
-      apiKey: {{ api_key | default: '' | json }},
-      sandboxBase: 'https://api.vedika.io/sandbox',
-      prodBase: 'https://api.vedika.io/v2/astrology',
-      getBase: function() {
-        return this.apiKey ? this.prodBase : this.sandboxBase;
-      },
-      getHeaders: function() {
-        var h = { 'Accept': 'application/json' };
-        if (this.apiKey) h['X-API-Key'] = this.apiKey;
-        return h;
-      }
+      proxyBase: '/apps/vedika'
     };
   </script>
 

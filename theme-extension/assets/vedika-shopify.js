@@ -59,25 +59,41 @@
   // API CLIENT
   // =========================================================================
 
+  // No API key is ever read into a request (Vastu review register leaks#3,
+  // 2026-09-17). Anything in theme markup or window.VedikaConfig reaches every
+  // storefront visitor, so a key there could be read and billed by anyone.
+  // Requests go to the app proxy on the shop's own domain (/apps/vedika by
+  // default); the proxy server adds the key. A leftover data-api-key attribute
+  // or VedikaConfig.apiKey from an older theme is ignored with one warning.
+  var DEFAULT_PROXY_BASE = '/apps/vedika';
+  var keyWarned = false;
+
+  function warnIgnoredKey(container) {
+    var legacy = container.getAttribute('data-api-key') || (window.VedikaConfig && window.VedikaConfig.apiKey);
+    if (!legacy || keyWarned) return;
+    keyWarned = true;
+    if (window.console && console.warn) {
+      console.warn('[vedika] The API key in this theme is ignored and was not sent. Remove it: a key in page markup is readable by every visitor. The app proxy adds the key server-side.');
+    }
+  }
+
   function getConfig(container) {
-    var apiKey = container.getAttribute('data-api-key') || '';
-    if (!apiKey && window.VedikaConfig) apiKey = window.VedikaConfig.apiKey || '';
+    warnIgnoredKey(container);
+    var base = container.getAttribute('data-proxy-base') ||
+      (window.VedikaConfig && window.VedikaConfig.proxyBase) || DEFAULT_PROXY_BASE;
     return {
-      apiKey: apiKey,
-      base: apiKey ? 'https://api.vedika.io/v2/astrology' : 'https://api.vedika.io/sandbox',
+      base: String(base).replace(/\/+$/, ''),
       lang: container.getAttribute('data-lang') || 'en',
       theme: container.getAttribute('data-theme') || 'light'
     };
   }
 
-  function apiFetch(base, path, apiKey, lang) {
+  function apiFetch(base, path, lang) {
     var url = base + path;
     var sep = url.indexOf('?') === -1 ? '?' : '&';
     if (lang && lang !== 'en') url += sep + 'lang=' + encodeURIComponent(lang);
-    var headers = { 'Accept': 'application/json' };
-    if (apiKey) headers['X-API-Key'] = apiKey;
 
-    return fetch(url, { headers: headers })
+    return fetch(url, { headers: { 'Accept': 'application/json' } })
       .then(function (r) { if (!r.ok) throw new Error('API returned ' + r.status); return r.json(); })
       .then(function (j) { if (j.success === false) throw new Error(j.error || 'API error'); return j.data || j; });
   }
@@ -172,7 +188,7 @@
       sign = s;
       showLoading(container, 'Loading horoscope...');
       var path = period === 'daily' ? '/horoscope/' + sign : '/horoscope/' + sign + '/' + period;
-      apiFetch(cfg.base, path, cfg.apiKey, cfg.lang)
+      apiFetch(cfg.base, path, cfg.lang)
         .then(render)
         .catch(function (e) { showError(container, e.message, function () { load(sign); }); });
     }
@@ -226,7 +242,7 @@
 
     function load() {
       showLoading(container, 'Drawing your card...');
-      apiFetch(cfg.base, '/tarot/card-of-the-day', cfg.apiKey, cfg.lang)
+      apiFetch(cfg.base, '/tarot/card-of-the-day', cfg.lang)
         .then(render)
         .catch(function (e) { showError(container, e.message, load); });
     }
@@ -303,7 +319,7 @@
       ld.appendChild(mk('div', 'vedika-loading__spinner'));
       resultDiv.appendChild(ld);
 
-      apiFetch(cfg.base, '/astrology/ashtakoota', cfg.apiKey, cfg.lang)
+      apiFetch(cfg.base, '/astrology/ashtakoota', cfg.lang)
         .then(renderResult)
         .catch(function (e) {
           clear(resultDiv);
@@ -376,7 +392,7 @@
     function load(s) {
       sign = s;
       showLoading(container, 'Finding your gemstones...');
-      apiFetch(cfg.base, '/crystals/by-zodiac', cfg.apiKey, cfg.lang)
+      apiFetch(cfg.base, '/crystals/by-zodiac/' + sign, cfg.lang)
         .then(render)
         .catch(function (e) { showError(container, e.message, function () { load(sign); }); });
     }
